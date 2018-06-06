@@ -25,7 +25,12 @@ ref_cur = ref_conn.cursor()
 def get_mkt_info(mkt_uptick_name_list, cur):
     """
     Test market id query
-    mkt_uptick_name_list = ['asx','sgx','johannesburg','istanbul','sao_paulo']
+    mkt_uptick_name_list = ['asx','sgx','johannesburg','istanbul','sao_paulo', 'lse', 'nasdaq']
+    asx ASX
+    sgx SES
+    istanbul IST
+    lse LSE
+    nasdaq NAQ NMQ NSQ (NAS NMS NSM)
     """
     mkt_info_query = "select * from api_market a where a.uptick_name = ANY(%s);"
     cur.execute(mkt_info_query, [mkt_uptick_name_list])
