@@ -63,5 +63,23 @@ def mkt_date_secs(mcol, mdate):
   slist = b['ticker_list']
   mlist = i['ticker_list']
 
-  print(slist)
-  print(mlist)
+  sto_news_col = opedia_news_db[scol]
+  date = dp.parse(mdate)
+
+  news_list = [['date', 'ticker', 'news_url']]
+  for ticker in slist:
+    news = list(
+        sto_news_col.find({
+            "ticker": {
+                "$eq": ticker
+            },
+            "date": {
+                "$gte": date,
+                "$lte": date
+            }
+        }))
+    for n in news:
+      news_list.append([date, ticker, n['news_url']])
+
+  pd.DataFrame(news_list).to_csv(
+      mcol + mdate + '.csv', header=False, index=False)
