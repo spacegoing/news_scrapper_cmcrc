@@ -1,0 +1,105 @@
+# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
+import psycopg2 as pg
+import pandas as pd
+
+mkt_dbconfig = {
+    'dbname': 'mqdashboard',
+    'user': 'dbreader',
+    'password': 'cmcrc2018!',
+    'host': 'mqdashboarddb-metrics.czm2hxmcygx4.us-east-1.rds.amazonaws.com'
+}
+mkt_conn = pg.connect(**mkt_dbconfig)
+mkt_cur = mkt_conn.cursor()
+
+ref_dbconfig = {
+    'dbname': 'refdata',
+    'host': 'reference-data.czm2hxmcygx4.us-east-1.rds.amazonaws.com',
+    'port': '5432',
+    'user': 'reader',
+    'password': 'refdatareader2017!'
+}
+ref_conn = pg.connect(**ref_dbconfig)
+ref_cur = ref_conn.cursor()
+
+
+def get_mkt_info(mkt_uptick_name_list, cur):
+    """
+    Test market id query
+    mkt_uptick_name_list = ['asx','sgx','johannesburg','istanbul','sao_paulo', 'lse', 'nasdaq']
+    asx ASX
+    sgx SES
+    istanbul IST
+    lse LSE
+    nasdaq NAQ NMQ NSQ (NAS NMS NSM)
+    """
+    mkt_info_query = "select * from api_market a where a.uptick_name = ANY(%s);"
+    cur.execute(mkt_info_query, [mkt_uptick_name_list])
+    mkt_info_list = cur.fetchall()
+    return mkt_info_list
+
+
+def get_mkt_id(mkt_info_list):
+    mkt_id_list = [i[0] for i in mkt_info_list]
+    return mkt_id_list
+
+
+def get_mkt_uptick_name(mkt_info_list):
+    mkt_uptickname_list = [i[-1] for i in mkt_info_list]
+    return mkt_uptickname_list
+
+
+def get_mkt_sec_cur(mkt_id_list, be_date, en_date, cur):
+    """
+    mkt_id_list = [1, 3, 33, 38, 208]
+    be_date = '2017-11-07'
+    en_date = '2017-11-07'
+
+    Test Query
+    mkt_sec_cur_query = "select distinct m.uptick_name, ds.security, t.currency_id from api_dailystats ds join api_tradable t on (ds.tradable_id = t.id) join api_market m on (ds.market_id = m.id) where ds.market_id in (1, 3, 33, 38, 208) and ds.date between '2017-11-07' and '2017-11-07' limit 10;"
+    cur.execute(mkt_sec_cur_query)
+
+    cur.mogrify(mkt_sec_cur_query, [mkt_id_list, be_date, en_date])
+    """
+    mkt_sec_cur_query = "select distinct m.uptick_name, ds.security, t.currency_id from api_dailystats ds join api_tradable t on (ds.tradable_id = t.id) join api_market m on (ds.market_id = m.id) where ds.market_id = ANY(%s) and ds.date between %s and %s;"
+    cur.execute(mkt_sec_cur_query, [mkt_id_list, be_date, en_date])
+    mkt_sec_cur_list = cur.fetchall()
+
+    return mkt_sec_cur_list
+
+
+def get_tradable_list(mkt_sec_cur_list):
+    tradable_list = list({":".join(i) for i in mkt_sec_cur_list})
+    return tradable_list
+
+
+def get_mkt_rics(mkt_uptick_name_list, tradable_list, be_date, en_date, cur):
+    """
+
+    Test Query
+    mkt_rics_query = "select distinct trading_market as Market, symbol as RIC from refdata_tradablesymbolmap where trading_market in ('asx', 'sgx', 'istanbul', 'johannesburg', 'sao_paulo') and tradable in ('sgx:RESH:SGD', 'sao_paulo:NVHO11:BRL', 'asx:BSX:AUD', 'johannesburg:SOHJ:ZAC', 'sgx:TECK:SGD', 'sao_paulo:DWDP34:BRL', 'sao_paulo:MSCD34:BRL', 'asx:AYI:AUD', 'asx:PMY:AUD', 'asx:BEL:AUD', 'sgx:MDRT:SGD') and date between '2018-04-06' and '2018-05-03' limit 10;"
+    tradable_list = ['sgx:RESH:SGD', 'sao_paulo:NVHO11:BRL', 'asx:BSX:AUD', 'johannesburg:SOHJ:ZAC', 'sgx:TECK:SGD', 'sao_paulo:DWDP34:BRL', 'sao_paulo:MSCD34:BRL', 'asx:AYI:AUD', 'asx:PMY:AUD', 'asx:BEL:AUD', 'sgx:MDRT:SGD']
+    """
+    mkt_rics_query = "select distinct trading_market as Market, symbol as RIC from refdata_tradablesymbolmap where trading_market = ANY(%s) and tradable = ANY(%s) and date between %s and %s;"
+    cur.execute(mkt_rics_query,
+                [mkt_uptick_name_list, tradable_list, be_date, en_date])
+    mkt_rics_list = ref_cur.fetchall()
+    return mkt_rics_list
+
+
+mkt_info_list = get_mkt_info(mkt_list, mkt_cur)
+mkt_id_list = get_mkt_id(mkt_info_list)
+mkt_uptick_name_list = get_mkt_uptick_name(mkt_info_list)
+
+be_date = '2017-11-07'
+en_date = '2017-11-07'
+mkt_sec_cur_list = get_mkt_sec_cur(mkt_id_list, be_date, en_date, mkt_cur)
+tradable_list = get_tradable_list(mkt_sec_cur_list)
+mkt_rics_list = get_mkt_rics(mkt_uptick_name_list, tradable_list, be_date,
+                             en_date, ref_cur)
+
+
+select * from refdata_refdata where key='company' and stream_name='ASX' and symbol='1AL.AX' limit 10;
+
+mkt_list = ['asx', 'sgx', 'johannesburg', 'istanbul', 'sao_paulo', 'nasdaq']
+stream_list = ['ASX', 'SGX', 'JNB', 'IST', 'SAO', ('NAS', 'NMS', 'NSM')]
