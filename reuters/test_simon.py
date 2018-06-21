@@ -67,6 +67,7 @@ def tmp_mqd_nodata():
   jse_df = generate_RIC_search_name_dict_using_input_file(input_file)
 
   final_df = pd.concat([asx_nas_lse_ist_df, sao_df, sgx_df, jse_df])
+  final_df['query_str'] = final_df['search_word'].apply(lambda x: '+'.join(x.split(' ')))
   final_df.to_csv('final_mqd_nodata.csv', index=False)
 
 def obtain_news_by_RIC(RIC):
