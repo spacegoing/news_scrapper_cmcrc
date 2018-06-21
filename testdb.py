@@ -21,6 +21,37 @@ ref_dbconfig = {
 ref_conn = pg.connect(**ref_dbconfig)
 ref_cur = ref_conn.cursor()
 
+def get_isin_ric_map(mkt):
+    """
+    read data from mqd aws sql
+    write parsed data to mongodb mqd_refdata isin_map
+    """
+
+    def parse_isin(s):
+        return s.split(':')[1]
+
+    def parse_ric(s):
+        return s.split('.')[0]
+
+    def parse_date(d):
+        import datetime
+        return datetime.datetime.combine(d, datetime.time())
+
+    ref_cur.execute("select * from refdata_tradablesymbolmap where stream_name = '%s'" % mkt)
+    map_list = ref_cur.fetchall()
+    map_df = pd.DataFrame(map_list, columns=['id', 'market', 'tradable', 'date', 'mkt', 'ric_suffix'])
+    map_df['isin'] = map_df['tradable'].apply(parse_isin)
+    map_df['ric'] = map_df['ric_suffix'].apply(parse_ric)
+    map_df['date'] = map_df['date'].apply(parse_date)
+    map_dict = map_df.to_dict('records')
+
+    from pymongo import MongoClient
+    client = MongoClient('mongodb://localhost:27017/')
+    mqd_agg_db = client['mqd_refdata']
+    col = mqd_agg_db['isin_map']
+    col.insert_many(map_dict)
+
+
 
 def get_mkt_info(mkt_uptick_name_list, cur):
     """
@@ -86,7 +117,7 @@ def get_mkt_rics(mkt_uptick_name_list, tradable_list, be_date, en_date, cur):
     return mkt_rics_list
 
 
-mkt_list = ['asx', 'sgx', 'johannesburg', 'istanbul', 'sao_paulo']
+mkt_list = ['asx', 'sgx', 'johannesburg', 'istanbul', 'sao_paulo', 'nasdaq']
 be_date = '2017-11-07'
 en_date = '2017-11-07'
 mkt_info_list = get_mkt_info(mkt_list, mkt_cur)
