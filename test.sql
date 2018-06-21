@@ -19,6 +19,11 @@ refdata_tradablesymbolmap where trading_market in ('asx', 'sgx',
 'asx:BEL:AUD', 'sgx:MDRT:SGD') and date between '2018-04-06' and
 '2018-05-03' limit 10;
 
+select * from refdata_refdata where key='company' and date between '2017-11-07' and '2017-12-07' and symbol='1AD.AX' and stream_name='ASX';
+
+select * from refdata_refdata where key='company' and date between '2017-11-07' and '2017-12-07' and symbol='MRNS.OQ' and stream_name in ('NAS', 'NMS', 'NSM');
+
+select distinct value from refdata_refdata where symbol='ZNH.SI' and stream_name='SGX';
 
 -- dangerous user
 -- 'ENGINE': 'django.db.backends.postgresql_psycopg2',
