@@ -14,12 +14,13 @@ BOT_NAME = 'reuters'
 SPIDER_MODULES = ['reuters.spiders']
 NEWSPIDER_MODULE = 'reuters.spiders'
 
+LOG_LEVEL = 'INFO'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'reuters (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-# ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -64,9 +65,9 @@ NEWSPIDER_MODULE = 'reuters.spiders'
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'reuters.pipelines.ReutersPipeline': 300,
-#}
+ITEM_PIPELINES = {
+   'reuters.pipelines.ReutersPipeline': 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
