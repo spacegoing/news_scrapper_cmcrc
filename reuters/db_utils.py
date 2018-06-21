@@ -149,4 +149,7 @@ def get_mkt_ric_compname_df(mkt_rics_list, compname_list):
 
 mkt_ric_compname_df = get_mkt_ric_compname_df(mkt_rics_list, compname_list)
 
-mkt_ric_compname_df.to_csv('ric_cmpname.csv', header=False, index=False)
+# mqd database without johannesburg, sao_paulo, sgx
+out_df = mkt_ric_compname_df[mkt_ric_compname_df[0].str.contains('asx|istanbul|lse|nasdaq', regex=True)]
+out_df.columns=['mkt','#RIC', 'Directory Company Name']
+out_df.to_csv('ric_cmpname.csv', index=False)
