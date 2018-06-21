@@ -68,7 +68,13 @@ def tmp_mqd_nodata():
 
   final_df = pd.concat([asx_nas_lse_ist_df, sao_df, sgx_df, jse_df])
   final_df['query_str'] = final_df['search_word'].apply(lambda x: '+'.join(x.split(' ')))
-  final_df.to_csv('final_mqd_nodata.csv', index=False)
+
+  url_tmpl = 'https://www.reuters.com/search/news?sortBy=date&dateRange=all&blob=%s'
+  final_df['query_ric_url'] = final_df['#RIC'].apply(lambda x: url_tmpl % x)
+  final_df['query_compname_url'] = final_df['query_str'].apply(lambda x: url_tmpl % x)
+
+  final_df.to_csv('final_mqd_nodata.csv', index=False, header=False)
+
 
 def obtain_news_by_RIC(RIC):
 
