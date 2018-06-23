@@ -10,13 +10,17 @@ mkt_list = [
 ]
 col_list = [db[k] for k in mkt_list]
 
+# be_date = '2018-01-31'
+# en_date = '2018-05-04'
+be_date = '2018-05-03'
+en_date = '2018-06-01'
 news_df_list = []
 for col in col_list:
   news_list = list(
       col.find({
           "date": {
-              "$gt": dp.parse('2018-05-03'),
-              "$lt": dp.parse('2018-06-01')
+              "$gt": dp.parse(be_date),
+              "$lt": dp.parse(en_date)
           }
       }))
   news_df = pd.DataFrame(news_list)
@@ -26,5 +30,18 @@ for col in col_list:
 df_total = pd.concat(news_df_list)
 df_total.rename(columns={'date': 'TimestampUTC', 'ric': 'RIC', 'title': 'Headline'}, inplace=True)
 
+def title_filter(x):
+  want = ['brief','update']
+  flag_list = []
+  for w in want:
+    tmp_flag=False
+    if w in x.lower():
+      tmp_flag=True
+    flag_list.append(tmp_flag)
+  return any(flag_list)
+
+real_news_rows_id = df_total['Headline'].apply(title_filter)
+
 out_total = df_total[['RIC', 'Market', 'TimestampUTC', 'Headline']]
-out_total.to_csv('result_asx_sgx_johannesburg_istanbul_sao_paulo_lse_nasdaq_2018-05-04_2018-05-31.csv', index=False)
+out_total = out_total[real_news_rows_id]
+out_total.to_csv('result_asx_sgx_johannesburg_istanbul_sao_paulo_lse_nasdaq_%s_%s.csv' % (be_date, en_date), index=False)
