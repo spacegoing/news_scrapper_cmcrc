@@ -92,11 +92,15 @@ class ReutersSpider(scrapy.Spider):
           callback=self.news_content_requests)
 
   def news_content_requests(self, response):
-    news_content = response.xpath('//div[@class="body_1gnLA"]').extract()[0]
+    error = False
+    try:
+      news_content = response.xpath('//div[@class="body_1gnLA"]').extract()[0]
+    except IndexError:
+      error = True
     news_content = '\n'.join(bs(news_content, 'lxml').stripped_strings)
     news_dict = response.meta['news_dict']
     news_dict['news_content'] = news_content
-    yield {'news_dict': news_dict, 'mkt': response.meta['mkt']}
+    yield {'news_dict': news_dict, 'mkt': response.meta['mkt'], 'error': error}
 
   def parse_json(self, tmp_string, meta):
     '''
