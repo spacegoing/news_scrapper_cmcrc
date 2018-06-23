@@ -89,7 +89,8 @@ class ReutersSpider(scrapy.Spider):
               'news_dict': n,
               'mkt': mkt
           },
-          callback=self.news_content_requests)
+          callback=self.news_content_requests,
+          dont_filter=True)
 
   def news_content_requests(self, response):
     error = False
