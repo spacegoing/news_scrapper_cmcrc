@@ -94,11 +94,12 @@ class ReutersSpider(scrapy.Spider):
 
   def news_content_requests(self, response):
     error = False
+    news_content = ''
     try:
       news_content = response.xpath('//div[@class="body_1gnLA"]').extract()[0]
+      news_content = '\n'.join(bs(news_content, 'lxml').stripped_strings)
     except IndexError:
       error = True
-    news_content = '\n'.join(bs(news_content, 'lxml').stripped_strings)
     news_dict = response.meta['news_dict']
     news_dict['news_content'] = news_content
     yield {'news_dict': news_dict, 'mkt': response.meta['mkt'], 'error': error}
