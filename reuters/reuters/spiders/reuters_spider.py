@@ -48,7 +48,7 @@ class ReutersSpider(scrapy.Spider):
       yield {'news_list': news_list, 'mkt': response.meta['mkt']}
 
       init_pn = 2
-      next_url = self.add_more_tmpl % (response.meta['ric'], init_pn)
+      next_url = self.add_more_tmpl % (response.meta['name_query_str'], init_pn)
       response.meta['pn'] = init_pn
       response.meta['next_keyword'] = response.meta['name_query_str']
       yield scrapy.Request(
