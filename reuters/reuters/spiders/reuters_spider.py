@@ -3,6 +3,7 @@ import scrapy
 import pandas as pd
 import dateparser as dp
 import demjson as dj
+from bs4 import BeautifulSoup as bs
 
 
 class ReutersSpider(scrapy.Spider):
@@ -31,7 +32,8 @@ class ReutersSpider(scrapy.Spider):
     # inspect_response(response, self)
     news_list = self.parse_web_page(response)
     if news_list:
-      yield {'news_list': news_list, 'mkt': response.meta['mkt']}
+      for request in self.parse_news_content(news_list, response.meta['mkt']):
+        yield request
 
       init_pn = 2
       next_url = self.add_more_tmpl % (response.meta['ric'], init_pn)
@@ -45,7 +47,8 @@ class ReutersSpider(scrapy.Spider):
     # inspect_response(response, self)
     news_list = self.parse_web_page(response)
     if news_list:
-      yield {'news_list': news_list, 'mkt': response.meta['mkt']}
+      for request in self.parse_news_content(news_list, response.meta['mkt']):
+        yield request
 
       init_pn = 2
       next_url = self.add_more_tmpl % (response.meta['name_query_str'], init_pn)
@@ -64,7 +67,8 @@ class ReutersSpider(scrapy.Spider):
       news_list = self.parse_json(tmp_string, response.meta)
 
       if news_list:
-        yield {'news_list': news_list, 'mkt': response.meta['mkt']}
+        for request in self.parse_news_content(news_list, response.meta['mkt']):
+          yield request
 
         pn = response.meta['pn'] + 1
         response.meta['pn'] = pn
@@ -72,7 +76,34 @@ class ReutersSpider(scrapy.Spider):
         yield scrapy.Request(
             next_url, meta=response.meta, callback=self.json_requests)
 
+  def parse_news_content(self, news_list, mkt):
+    '''
+    Inputs:
+      news_list: list of dict contains: date, title, url, comp_name, ric
+      mkt: string. meta['mkt']
+    '''
+    for n in news_list:
+      yield scrapy.Request(
+          n['url'],
+          meta={
+              'news_dict': n,
+              'mkt': mkt
+          },
+          callback=self.news_content_requests)
+
+  def news_content_requests(self, response):
+    news_content = response.xpath('//div[@class="body_1gnLA"]').extract()[0]
+    news_content = '\n'.join(bs(news_content, 'lxml').stripped_strings)
+    news_dict = response.meta['news_dict']
+    news_dict['news_content'] = news_content
+    yield {'news_dict': news_dict, 'mkt': response.meta['mkt']}
+
   def parse_json(self, tmp_string, meta):
+    '''
+
+    return:
+      news_list: list of dict contains: date, title, url, comp_name, ric
+    '''
     tmp_str = ''
     for i in tmp_string:
       tmp_str += i
@@ -100,6 +131,11 @@ class ReutersSpider(scrapy.Spider):
     return news_list
 
   def parse_web_page(self, response):
+    '''
+
+    return:
+      news_list: list of dict contains: date, title, url, comp_name, ric
+    '''
     url_list = response.xpath('//h3/a/@href').extract()
     # using xpath string() function to avoid text() multi lines effect
     title_list = response.xpath('//h3')
