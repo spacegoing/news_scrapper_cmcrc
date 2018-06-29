@@ -10,9 +10,15 @@ class ReutersSpider(scrapy.Spider):
   name = 'reuters_spider'
   add_more_tmpl = "https://www.reuters.com/assets/searchArticleLoadMoreJson?blob=%s&bigOrSmall=big&articleWithBlog=true&sortBy=date&dateRange=all&numResultsToShow=10&pn=%d&callback=addMoreNewsResults"
   root_url = "https://www.reuters.com"
+  date_range = 'week'
 
   def start_requests(self):
     raw_df = pd.read_csv('final_mqd_nodata.csv')
+    raw_df.columns = ['mkt','ric','compname','kw', 'url_ric','url_kw']
+
+    filter_fn = self.date_range_fn(self.date_range)
+    raw_df['url_ric'] = raw_df['url_ric'].apply(filter_fn)
+    raw_df['url_kw'] = raw_df['url_kw'].apply(filter_fn)
     raw_mat = raw_df.as_matrix()
 
     for i in raw_mat:
@@ -127,7 +133,7 @@ class ReutersSpider(scrapy.Spider):
     if news_list:
       news_df = pd.DataFrame(news_list)
       news_df['date'] = news_df['date'].apply(dp.parse)
-      news_df['url'] = news_df['href'].apply(lambda x: self.root_url + x)
+      news_df['url'] = news_df['href'].apply(self.add_root_url)
       news_df['title'] = news_df['headline']
       news_df = news_df[['date', 'url', 'title']]
       news_df['comp_name'] = meta['comp_name']
@@ -157,8 +163,30 @@ class ReutersSpider(scrapy.Spider):
           'date': date_list
       })
       tmp_df['date'] = tmp_df['date'].apply(dp.parse)
-      tmp_df['url'] = tmp_df['url'].apply(lambda x: self.root_url + x)
+      tmp_df['url'] = tmp_df['url'].apply(self.add_root_url)
       tmp_df['comp_name'] = response.meta['comp_name']
       tmp_df['ric'] = response.meta['ric']
       news_list = tmp_df.to_dict(orient='record')
     return news_list
+
+  def add_root_url(self, x):
+    if 'http' not in x.lower():
+      x = self.root_url + x
+    return x
+
+  def date_range_fn(self, range_str):
+    range_dict = {
+        'all': 'all',
+        'day': 'pastDay',
+        'week': 'pastWeek',
+        'month': 'pastMonth',
+        'year': 'pastYear'
+    }
+
+    range_str = range_dict.get(range_str.lower(), 'all')
+
+    def url_daterange_fn(string):
+      return string.replace('dateRange=all', 'dateRange=%s' % range_str)
+
+    return url_daterange_fn
+
