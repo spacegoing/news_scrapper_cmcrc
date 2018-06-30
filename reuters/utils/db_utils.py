@@ -79,12 +79,17 @@ def get_mkt_rics(mkt_uptick_name_list, tradable_list, be_date, en_date, cur):
     mkt_rics_query = "select distinct trading_market as Market, symbol as RIC from refdata_tradablesymbolmap where trading_market in ('asx', 'sgx', 'istanbul', 'johannesburg', 'sao_paulo') and tradable in ('sgx:RESH:SGD', 'sao_paulo:NVHO11:BRL', 'asx:BSX:AUD', 'johannesburg:SOHJ:ZAC', 'sgx:TECK:SGD', 'sao_paulo:DWDP34:BRL', 'sao_paulo:MSCD34:BRL', 'asx:AYI:AUD', 'asx:PMY:AUD', 'asx:BEL:AUD', 'sgx:MDRT:SGD') and date between '2018-04-06' and '2018-05-03' limit 10;"
     tradable_list = ['sgx:RESH:SGD', 'sao_paulo:NVHO11:BRL', 'asx:BSX:AUD', 'johannesburg:SOHJ:ZAC', 'sgx:TECK:SGD', 'sao_paulo:DWDP34:BRL', 'sao_paulo:MSCD34:BRL', 'asx:AYI:AUD', 'asx:PMY:AUD', 'asx:BEL:AUD', 'sgx:MDRT:SGD']
     """
-  mkt_rics_query = "select distinct trading_market as Market, symbol as RIC from refdata_tradablesymbolmap where trading_market = ANY(%s) and tradable = ANY(%s) and date between %s and %s;"
+  mkt_rics_query = "select distinct trading_market as Market, symbol as RIC, tradable from refdata_tradablesymbolmap where trading_market = ANY(%s) and tradable = ANY(%s) and date between %s and %s;"
   cur.execute(mkt_rics_query,
               [mkt_uptick_name_list, tradable_list, be_date, en_date])
   mkt_rics_list = cur.fetchall()
   return mkt_rics_list
 
+def save_ric_isin_map(mkt_rics_isin_list):
+  df = pd.DataFrame(mkt_rics_isin_list)
+  df.columns=['mkt','ric','ric_or_isin']
+  df['ric_or_isin'] = df['ric_or_isin'].apply(lambda x: x.split(':')[1])
+  df.to_csv('mkt_ric_isin_map.csv', index=False)
 
 mkt_list = [
     'asx', 'sgx', 'johannesburg', 'istanbul', 'sao_paulo', 'nasdaq', 'lse'
@@ -99,6 +104,7 @@ mkt_sec_cur_list = get_mkt_sec_cur(mkt_id_list, be_date, en_date, mkt_cur)
 tradable_list = get_tradable_list(mkt_sec_cur_list)
 mkt_rics_list = get_mkt_rics(mkt_uptick_name_list, tradable_list, be_date,
                              en_date, ref_cur)
+save_ric_isin_map(mkt_rics_list)
 
 stream_dict = {
     'asx': 'ASX',
