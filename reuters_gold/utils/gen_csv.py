@@ -51,7 +51,7 @@ def title_filter(x):
 
 real_news_rows_id = df_total['Headline'].apply(title_filter)
 
-out_total = df_total[['RIC', 'Market', 'TimestampUTC', 'Headline']]
+out_total = df_total[['RIC', 'Market', 'TimestampUTC', 'Headline','url']]
 out_total = out_total[real_news_rows_id]
 
 

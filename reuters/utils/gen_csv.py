@@ -4,16 +4,22 @@ import dateparser as dp
 from pymongo import MongoClient
 
 client = MongoClient('mongodb://localhost:27017/')
-db = client['reuters_6_news']
+db = client['reuters_news_content']
 mkt_list = [
-    'asx', 'sgx', 'johannesburg', 'istanbul', 'sao_paulo', 'lse', 'nasdaq'
+    'asx', 'sgx', 'johannesburg', 'sao_paulo', 'lse', 'nasdaq'
 ]
+# mkt_list = [
+#     'sgx', 'johannesburg'
+# ]
+# mkt_list = [
+#     'asx', 'sao_paulo', 'lse', 'nasdaq'
+# ]
 col_list = [db[k] for k in mkt_list]
 
 # be_date = '2018-01-31'
 # en_date = '2018-05-04'
-be_date = '2018-05-03'
-en_date = '2018-06-01'
+be_date = '2018-05-06'
+en_date = '2018-05-12'
 news_df_list = []
 for col in col_list:
   news_list = list(
@@ -65,7 +71,7 @@ def recover_isin(out_total):
       string = candidate
     return string
 
-  out_total['RIC'] = out_total.apply(recover, axis=1)
+  out_total['ISIN'] = out_total.apply(recover, axis=1)
 
 
 recover_isin(out_total)
