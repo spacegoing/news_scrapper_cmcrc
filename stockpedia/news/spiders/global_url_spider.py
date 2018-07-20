@@ -62,15 +62,20 @@ class LoginSpider(scrapy.Spider):
 
         # get pagination list
         pg_li_list = response.xpath('//div[@class="pagination"][1]/li')
-        end_pg_li = pg_li_list[end_pg_idx]
-        self.end_page_idx = int(end_pg_li.xpath('a/text()').extract()[0])
 
-        # visit next pages
-        shares_pages = [response.meta['url_template'] % i for i in range(self.start_page_idx, self.end_page_idx+1)]
+        if len(pg_li_list)<2:
+            yield scrapy.Request(response.url, callback=self.parse_page,
+                                dont_filter=True, meta=response.meta)
+        else: # if have more than one page
+            end_pg_li = pg_li_list[end_pg_idx]
+            self.end_page_idx = int(end_pg_li.xpath('a/text()').extract()[0])
 
-        for i,url in enumerate(shares_pages):
-            yield scrapy.Request(url, callback=self.parse_page,
-                                 dont_filter=True, meta=response.meta)
+            # visit next pages
+            shares_pages = [response.meta['url_template'] % i for i in range(self.start_page_idx, self.end_page_idx+1)]
+
+            for i,url in enumerate(shares_pages):
+                yield scrapy.Request(url, callback=self.parse_page,
+                                    dont_filter=True, meta=response.meta)
 
     def parse_page(self, response):
         self.logger.info(response.url)
