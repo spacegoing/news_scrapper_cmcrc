@@ -30,69 +30,8 @@ class LoginSpider(scrapy.Spider):
       return
 
     # defined in pipelines.py NewsPipeline->open_spider()
-    # url_list = self.url_db.global_urls.find()
-    url_list = [{
-        "nation":
-            "Singapore",
-        "name":
-            "Samurai 2K Aerosol",
-        "mkt":
-            "SES",
-        "href":
-            "https://www.stockopedia.com/share-prices/samurai-2k-aerosol-SGX:1C3/",
-        "ticker":
-            "1C3",
-        "region":
-            "Asia",
-        "page_url":
-            "https://www.stockopedia.com/share-prices/?page=7&region=sg"
-    }, {
-        "nation": "Singapore",
-        "name": "San Teh",
-        "mkt": "SES",
-        "href": "https://www.stockopedia.com/share-prices/san-teh-SGX:S46/",
-        "ticker": "S46",
-        "region": "Asia",
-        "page_url": "https://www.stockopedia.com/share-prices/?page=7&region=sg"
-    }, {
-        "nation":
-            "Singapore",
-        "name":
-            "Sanli Environmental",
-        "mkt":
-            "SES",
-        "href":
-            "https://www.stockopedia.com/share-prices/sanli-environmental-SGX:1E3/",
-        "ticker":
-            "1E3",
-        "region":
-            "Asia",
-        "page_url":
-            "https://www.stockopedia.com/share-prices/?page=7&region=sg"
-    }, {
-        "nation":
-            "Singapore",
-        "name":
-            "Santak Holdings",
-        "mkt":
-            "SES",
-        "href":
-            "https://www.stockopedia.com/share-prices/santak-holdings-SGX:580/",
-        "ticker":
-            "580",
-        "region":
-            "Asia",
-        "page_url":
-            "https://www.stockopedia.com/share-prices/?page=7&region=sg"
-    }, {
-        "nation": "Singapore",
-        "name": "Sapphire",
-        "mkt": "SES",
-        "href": "https://www.stockopedia.com/share-prices/sapphire-SGX:BRD/",
-        "ticker": "BRD",
-        "region": "Asia",
-        "page_url": "https://www.stockopedia.com/share-prices/?page=7&region=sg"
-    }]
+    url_list = self.url_db.global_urls.find()
+
     for i in url_list:
       yield scrapy.Request(
           i['href'] + 'news/',
