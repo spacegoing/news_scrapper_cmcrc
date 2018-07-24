@@ -65,7 +65,7 @@ class LoginSpider(scrapy.Spider):
       # from scrapy.shell import inspect_response
       # inspect_response(response, self)
       news_pages = [
-          response.url + '?page=%d' % i for i in range(1, end_page_idx + 1)
+          response.url + '?page=%d' % i for i in range(2, end_page_idx + 1)
       ]
 
       # debug
