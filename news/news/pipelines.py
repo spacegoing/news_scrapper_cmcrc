@@ -37,9 +37,12 @@ class NewsPipeline(object):
         'news_content': news_content
     }
 
-    comp_mkt = item['meta']['mkt']
-    self.title_col = self.db['%s_News' % comp_mkt]
-    if record:
+    if item['error']:
+      self.title_col = self.db['error_urls']
+      self.title_col.insert(record)
+    else:
+      comp_mkt = item['meta']['mkt']
+      self.title_col = self.db['%s_News' % comp_mkt]
       self.title_col.insert(record)
     return item
 
