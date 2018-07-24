@@ -108,10 +108,13 @@ class LoginSpider(scrapy.Spider):
     date_time = dp.parse(time_str)
 
     # parse content
-    news_content = response.xpath('//div[@class="s116"]/pre/text()').extract()[
-        0]
+    news_content = '' # some news do not have content
+    news_content_list = response.xpath(
+        '//div[@class="s116"]/pre/text()').extract()
+    if news_content_list:
+      news_content = news_content_list[0]
 
-    if date_time and news_content:
+    if date_time:
       yield {
           'date_time': date_time,
           'news_content': news_content,
