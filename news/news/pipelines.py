@@ -18,6 +18,7 @@ class NewsPipeline(object):
   def process_item(self, item, spider):
     date_time = item['date_time']
     news_content = item['news_content']
+    tzinfo = item['tzinfo']
     comp_name = item['meta']['name']
     comp_url = item['meta']['comp_url']
     ticker = item['meta']['ticker']
@@ -32,6 +33,7 @@ class NewsPipeline(object):
         'news_url': news_url,
         'ticker': ticker,
         'date_time': date_time,
+        'tzinfo': tzinfo,
         'news_content': news_content
     }
 

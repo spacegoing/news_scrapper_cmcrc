@@ -107,10 +107,12 @@ class LoginSpider(scrapy.Spider):
     time_str = '\n'.join(time_str_list)
     time_str = self.filter_spaces(time_str)
     date_time = dp.parse(time_str)
+    # Add timezone info
     date_time = date_time.replace(tzinfo=timezone.utc)
+    tzinfo = 'UTC'
 
     # parse content
-    news_content = '' # some news do not have content
+    news_content = ''  # some news do not have content
     news_content_list = response.xpath(
         '//div[@class="s116"]/pre/text()').extract()
     if news_content_list:
@@ -120,6 +122,7 @@ class LoginSpider(scrapy.Spider):
       yield {
           'date_time': date_time,
           'news_content': news_content,
+          'tzinfo': tzinfo,
           'meta': response.meta
       }
 
