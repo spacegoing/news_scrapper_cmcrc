@@ -2,6 +2,7 @@
 import re
 import scrapy
 import dateparser as dp
+from datetime import timezone
 
 
 class LoginSpider(scrapy.Spider):
@@ -106,6 +107,7 @@ class LoginSpider(scrapy.Spider):
     time_str = '\n'.join(time_str_list)
     time_str = self.filter_spaces(time_str)
     date_time = dp.parse(time_str)
+    date_time = date_time.replace(tzinfo=timezone.utc)
 
     # parse content
     news_content = '' # some news do not have content
@@ -125,5 +127,5 @@ class LoginSpider(scrapy.Spider):
     '''
     filter out all white spaces (\r \t \n etc.)
     '''
-    ftr = re.compile(r'[\S ]')
+    ftr = re.compile(r'[\S ]+')
     return ftr.findall(string.strip())[0]
