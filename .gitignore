@@ -1,3 +1,5 @@
+.DS_Store
+PDFs/
 s3_data/
 name_mkt_url_data/
 # Created by https://www.gitignore.io/api/python
