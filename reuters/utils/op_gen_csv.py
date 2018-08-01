@@ -11,12 +11,14 @@ db = client['stockopedia_news']
 mkt_list = [
     'NAQ_News', 'NMQ_News', 'NSQ_News', 'ASX_News', 'SES_News', 'LSE_News'
 ]
+uptick_list = ['nasdaq','nasdaq','nasdaq','asx','sgx','lse']
 col_list = [db[k] for k in mkt_list]
+uptick_dict = {k:v for k,v in zip(mkt_list,uptick_list)}
 
 # be_date = '2018-01-31'
 # en_date = '2018-05-04'
-be_date = '2018-03-31'
-en_date = '2018-05-01'
+be_date = '2018-06-30'
+en_date = '2018-08-01'
 news_df_list = []
 for col in col_list:
   news_list = list(
@@ -27,8 +29,24 @@ for col in col_list:
           }
       }))
   news_df = pd.DataFrame(news_list)
-  news_df['Market'] = col.name
+  news_df['Market'] = uptick_dict[col.name]
   news_df_list.append(news_df)
+
+def recover_isin(out_total):
+  mkt_ric_isin_map = pd.read_csv('mkt_ric_isin_map.csv', index_col=None)
+  mkt_ric_isin_dict = {(i[0], i[1].split('.')[0]): i[2] for i in mkt_ric_isin_map.values}
+
+  def recover(x):
+    string = x['RIC']
+    candidate = mkt_ric_isin_dict.get((x['Market'], x['RIC']), '')
+    if len(candidate) >= 10:
+      string = candidate
+    return string
+
+  out_total['ISIN'] = out_total.apply(recover, axis=1)
+
+
+
 
 def gen_csv(df_list, fn):
   df_total = pd.concat(df_list)
@@ -40,7 +58,14 @@ def gen_csv(df_list, fn):
       },
       inplace=True)
 
-  df_total.to_csv(fn+'.csv', index=False)
+  out_total = df_total[['RIC', 'Market', 'TimestampUTC', 'Headline']]
+  recover_isin(out_total)
+  def filter_double_per(x):
+    return x.count('.')<2
+
+  out_total = out_total[out_total['RIC'].apply(filter_double_per)]
+  out_total.to_csv(fn+'_%s_%s.csv' % (be_date, en_date), index=False)
+
 
 gen_csv(news_df_list[:3],'nasdaq')
 gen_csv([news_df_list[3]],'asx')
