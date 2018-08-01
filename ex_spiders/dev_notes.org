@@ -1,0 +1,16 @@
+* Notes
+
+** Meta Data
+
+
+*** Collection Name
+Collection name should be consistent with uptickname
+~'asx', 'sgx', 'johannesburg', 'sao_paulo', 'lse', 'nasdaq', 'error_urls'~
+
+
+*** Spider Name
+#+BEGIN_SRC python
+class ASXSpider(scrapy.Spider):
+  name = 'asx_spider'
+#+END_SRC
+spider ~name~ should be ~[uptickname]_spider~.
