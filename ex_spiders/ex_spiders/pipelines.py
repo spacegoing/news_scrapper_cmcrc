@@ -23,7 +23,7 @@ class ASXPipeline(object):
       #   self.col_dict['error_urls'].insert_one(item['news_dict'])
       # else:
       # todo: change mkt
-      mkt = spider.name.split('_')[0]
+      mkt = '_'.join(spider.name.split('_')[0:-1])
       self.col_dict[mkt].insert_one(item)
     return item
 
