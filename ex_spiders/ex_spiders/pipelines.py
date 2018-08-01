@@ -13,8 +13,7 @@ class ASXPipeline(object):
     self.client = MongoClient('mongodb://localhost:27017/')
     self.db = self.client['Announcements_Exchange']
     mkt_list = [
-        'asx', 'sgx', 'johannesburg', 'istanbul', 'sao_paulo', 'lse', 'nasdaq',
-        'error_urls'
+        'asx', 'sgx', 'johannesburg', 'sao_paulo', 'lse', 'nasdaq', 'error_urls'
     ]
     self.col_dict = {k: self.db[k] for k in mkt_list}
 
@@ -24,7 +23,7 @@ class ASXPipeline(object):
       #   self.col_dict['error_urls'].insert_one(item['news_dict'])
       # else:
       # todo: change mkt
-      mkt='asx'
+      mkt = spider.name.split('_')[0]
       self.col_dict[mkt].insert_one(item)
     return item
 
@@ -33,5 +32,6 @@ class ASXPipeline(object):
 
 
 class ExSpidersPipeline(object):
-    def process_item(self, item, spider):
-        return item
+
+  def process_item(self, item, spider):
+    return item
