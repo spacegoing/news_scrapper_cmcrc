@@ -23,8 +23,8 @@ class ASXSpider(scrapy.Spider):
     else:
       date_list = []
 
-    # debug:
-    for i in date_list[:5]:
+    # todo: latest date
+    for i in date_list:
       yield scrapy.Request(self.web_url % i, callback=self.parse)
 
   def parse(self, response):
