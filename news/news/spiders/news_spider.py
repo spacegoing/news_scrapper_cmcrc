@@ -33,19 +33,31 @@ class LoginSpider(scrapy.Spider):
     # defined in pipelines.py NewsPipeline->open_spider()
     url_list = self.url_db.global_urls.find()
 
+    filter_list = ['ASX', 'SES', 'LSE', 'NAS', 'NMS', 'NSM']
+    # stream_dict = {
+    #     'asx': 'ASX',
+    #     'sgx': 'SES',
+    #     'lse': 'LSE',
+    #     'nasdaq': ['NAS', 'NMS', 'NSM']
+    #     # 'johannesburg': 'JNB',
+    #     # 'istanbul': 'IST',
+    #     # 'sao_paulo': 'SAO',
+    # }
+
     for i in url_list:
-      yield scrapy.Request(
-          i['href'] + 'news/',
-          callback=self.parse_first_page,
-          meta={
-              'name': i['name'],
-              'mkt': i['mkt'],
-              'comp_url': i['href'],
-              'ticker': i['ticker'],
-              'region': i['region'],
-              'nation': i['nation']
-          },
-          dont_filter=True)
+      if i['mkt'] in filter_list:
+        yield scrapy.Request(
+            i['href'] + 'news/',
+            callback=self.parse_first_page,
+            meta={
+                'name': i['name'],
+                'mkt': i['mkt'],
+                'comp_url': i['href'],
+                'ticker': i['ticker'],
+                'region': i['region'],
+                'nation': i['nation']
+            },
+            dont_filter=True)
 
   def parse_first_page(self, response):
     """
@@ -89,14 +101,19 @@ class LoginSpider(scrapy.Spider):
     for i in tr_list:
       td_list = i.xpath('td')
       response.meta['date'] = td_list[0].xpath('text()').extract()[0].strip()
+      response.meta['date'] = dp.parse(response.meta['date'])
       response.meta['title'] = td_list[1].xpath('a/text()').extract()[0].strip()
       response.meta['news_url'] = self.website_url + td_list[1].xpath(
           'a/@href').extract()[0].strip()
-      yield scrapy.Request(
-          response.meta['news_url'],
-          callback=self.parse_content,
-          dont_filter=True,
-          meta=response.meta)
+
+      # todo: update from database
+      old_latest_date = dp.parse('2018 05 30')
+      if response.meta['date'] > old_latest_date:
+        yield scrapy.Request(
+            response.meta['news_url'],
+            callback=self.parse_content,
+            dont_filter=True,
+            meta=response.meta)
 
   def parse_content(self, response):
     # from scrapy.shell import inspect_response
