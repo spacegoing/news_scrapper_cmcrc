@@ -48,7 +48,7 @@ def recover_isin(out_total):
     x['RIC']: ric withouth suffix
     '''
     string = x['RIC']
-    if x['Market']=='lse':
+    if x['Market'] == 'lse':
       candidate = mkt_ric_isin_dict.get((x['Market'], x['RIC']), '')
       if candidate:
         isin, ric_suffix = candidate
@@ -57,12 +57,19 @@ def recover_isin(out_total):
           x['RIC'] = ric_suffix
     return string
 
+  def append_suf(out_total):
+    for mkt, suf in suf_map.items():
+      out_total.loc[
+          out_total['Market'] == mkt,
+          'RIC'] = out_total[out_total['Market'] == mkt]['RIC'] + '.' + suf
+
+    mkt = 'lse'
+    out_total.loc[out_total['Market'] == mkt, 'RIC'] = out_total[out_total[
+        'Market'] == mkt]['RIC'].apply(
+            lambda x: mkt_ric_isin_dict.get(('lse', x['RIC']), ''))
+
   out_total['ISIN'] = out_total.apply(recover, axis=1)
 
-
-def append_suf(out_total):
-  for mkt, suf in suf_map.items():
-    out_total.loc[out_total['Market'] == mkt ,'RIC'] = out_total[out_total['Market'] == mkt]['RIC'] + '.'+suf
 
 def gen_csv(df_list, fn):
   df_total = pd.concat(df_list)
@@ -76,7 +83,6 @@ def gen_csv(df_list, fn):
 
   out_total = df_total[['RIC', 'Market', 'TimestampUTC', 'Headline']]
   recover_isin(out_total)
-  append_suf(out_total)
 
   def filter_double_per(x):
     return x.count('.') < 2
