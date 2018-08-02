@@ -50,10 +50,11 @@ def recover_isin(out_total):
     string = x['RIC']
     if x['Market']=='lse':
       candidate = mkt_ric_isin_dict.get((x['Market'], x['RIC']), '')
-      isin, ric_suffix = candidate
-      if len(isin) >= 10:
-        string = isin
-        x['RIC'] = ric_suffix
+      if candidate:
+        isin, ric_suffix = candidate
+        if len(isin) >= 10:
+          string = isin
+          x['RIC'] = ric_suffix
     return string
 
   out_total['ISIN'] = out_total.apply(recover, axis=1)
@@ -61,8 +62,7 @@ def recover_isin(out_total):
 
 def append_suf(out_total):
   for mkt, suf in suf_map.items():
-    out_total['RIC'] = out_total[out_total['Market'] == mkt]['RIC'] + suf
-
+    out_total.loc[out_total['Market'] == mkt ,'RIC'] = out_total[out_total['Market'] == mkt]['RIC'] + '.'+suf
 
 def gen_csv(df_list, fn):
   df_total = pd.concat(df_list)
