@@ -36,15 +36,24 @@ for col in col_list:
 
 def recover_isin(out_total):
   mkt_ric_isin_map = pd.read_csv('mkt_ric_isin_map.csv', index_col=None)
+  # mkt_ric_isin_map = mkt_ric_isin_map[mkt_ric_isin_map['mkt']=='lse']
+  # mkt_ric_isin_map.to_csv('mkt_ric_isin_map.csv', index=False)
+  # dict: ric_no_suffix: [isin, ric_suffix]
   mkt_ric_isin_dict = {
-      (i[0], i[1].split('.')[0]): i[2] for i in mkt_ric_isin_map.values
+      (i[0], i[1].split('.')[0]): [i[2], i[1]] for i in mkt_ric_isin_map.values
   }
 
   def recover(x):
+    '''
+    x['RIC']: ric withouth suffix
+    '''
     string = x['RIC']
-    candidate = mkt_ric_isin_dict.get((x['Market'], x['RIC']), '')
-    if len(candidate) >= 10:
-      string = candidate
+    if x['Market']=='lse':
+      candidate = mkt_ric_isin_dict.get((x['Market'], x['RIC']), '')
+      isin, ric_suffix = candidate
+      if len(isin) >= 10:
+        string = isin
+        x['RIC'] = ric_suffix
     return string
 
   out_total['ISIN'] = out_total.apply(recover, axis=1)
