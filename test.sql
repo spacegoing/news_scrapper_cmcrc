@@ -25,6 +25,11 @@ select * from refdata_refdata where key='company' and date between '2017-11-07' 
 
 select distinct value from refdata_refdata where symbol='ZNH.SI' and stream_name='SGX';
 
+-- ticker
+select * from refdata_refdata
+where stream_name = 'SES'
+and value = 'HKLD' and key = 'ticker_symbol';
+
 -- dangerous user
 -- 'ENGINE': 'django.db.backends.postgresql_psycopg2',
 -- 'NAME': 'mqdashboard',
