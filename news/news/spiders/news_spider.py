@@ -17,8 +17,8 @@ class LoginSpider(scrapy.Spider):
     yield scrapy.FormRequest.from_response(
         response,
         formdata={
-            'username': 'spacebnbk',
-            'password': 'qwertyuio',
+            'username': 'weis',
+            'password': '123456',
             'remember': 'on',
             'redirect': 'auth%2Flogout'
         },
@@ -32,8 +32,6 @@ class LoginSpider(scrapy.Spider):
 
     # defined in pipelines.py NewsPipeline->open_spider()
     url_list = self.url_db.global_urls.find()
-
-    filter_list = ['ASX', 'SES', 'LSE', 'NAS', 'NMS', 'NSM']
     # stream_dict = {
     #     'asx': 'ASX',
     #     'sgx': 'SES',
@@ -44,6 +42,7 @@ class LoginSpider(scrapy.Spider):
     #     # 'sao_paulo': 'SAO',
     # }
 
+    filter_list = ['ASX', 'SES', 'LSE', 'NAQ', 'NMQ', 'NSQ', 'NYQ', 'PCQ', 'ASQ', 'BTQ']
     for i in url_list:
       if i['mkt'] in filter_list:
         yield scrapy.Request(
