@@ -10,7 +10,7 @@ class ReutersSpider(scrapy.Spider):
   name = 'reuters_spider'
   add_more_tmpl = "https://www.reuters.com/assets/searchArticleLoadMoreJson?blob=%s&bigOrSmall=big&articleWithBlog=true&sortBy=date&dateRange=all&numResultsToShow=10&pn=%d&callback=addMoreNewsResults"
   root_url = "https://www.reuters.com"
-  date_range = 'week'
+  date_range = 'month'
 
   def start_requests(self):
     raw_df = pd.read_csv('final_mqd_nodata.csv')
@@ -99,11 +99,16 @@ class ReutersSpider(scrapy.Spider):
           dont_filter=True)
 
   def news_content_requests(self, response):
+    # from scrapy.shell import inspect_response
+    # inspect_response(response, self)
     error = False
     news_content = ''
     try:
-      news_content = response.xpath('//div[@class="body_1gnLA"]').extract()[0]
-      news_content = '\n'.join(bs(news_content, 'lxml').stripped_strings)
+      news_content = response.xpath('//div[@class="body_1gnLA"]').extract()
+      # reuters changed news content css class 20180831
+      if not news_content:
+        news_content = response.xpath('//div[contains(@class,"StandardArticleBody_body")]').extract()
+      news_content = '\n'.join(bs(news_content[0], 'lxml').stripped_strings)
     except IndexError:
       error = True
     news_dict = response.meta['news_dict']
