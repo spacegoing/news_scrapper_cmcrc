@@ -5,21 +5,21 @@ from pymongo import MongoClient
 
 client = MongoClient('mongodb://localhost:27017/')
 db = client['reuters_news_content']
+# mkt_list = [
+#     'asx', 'sgx', 'lse', 'nasdaq', 'johannesburg', 'sao_paulo'
+# ]
+# mkt_list = [
+#     'asx', 'sgx', 'lse', 'nasdaq'
+# ]
 mkt_list = [
-    'asx', 'sgx', 'johannesburg', 'sao_paulo', 'lse', 'nasdaq'
+    'sao_paulo', 'johannesburg'
 ]
-# mkt_list = [
-#     'sgx', 'johannesburg'
-# ]
-# mkt_list = [
-#     'asx', 'sao_paulo', 'lse', 'nasdaq'
-# ]
 col_list = [db[k] for k in mkt_list]
 
 # be_date = '2018-01-31'
 # en_date = '2018-05-04'
-be_date = '2018-05-06'
-en_date = '2018-05-12'
+be_date = '2018-07-31'
+en_date = '2018-09-01'
 news_df_list = []
 for col in col_list:
   news_list = list(
@@ -54,10 +54,9 @@ def title_filter(x):
   return any(flag_list)
 
 
-real_news_rows_id = df_total['Headline'].apply(title_filter)
-
 out_total = df_total[['RIC', 'Market', 'TimestampUTC', 'Headline']]
-out_total = out_total[real_news_rows_id]
+# real_news_rows_id = df_total['Headline'].apply(title_filter)
+# out_total = out_total[real_news_rows_id]
 
 
 def recover_isin(out_total):
@@ -82,6 +81,6 @@ def filter_double_per(x):
 out_total = out_total[out_total['RIC'].apply(filter_double_per)]
 
 out_total.to_csv(
-    'result_asx_sgx_johannesburg_istanbul_sao_paulo_lse_nasdaq_%s_%s.csv' %
-    (be_date, en_date),
+    'result_%s_%s_%s.csv' %
+    ('_'.join(mkt_list), be_date, en_date),
     index=False)

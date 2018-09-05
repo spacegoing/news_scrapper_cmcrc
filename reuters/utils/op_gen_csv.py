@@ -18,8 +18,8 @@ suf_map = {'nasdaq': 'OQ', 'asx': 'AX', 'sgx': 'SI'}
 
 # be_date = '2018-01-31'
 # en_date = '2018-05-04'
-be_date = '2018-06-30'
-en_date = '2018-08-01'
+be_date = '2018-07-31'
+en_date = '2018-09-01'
 news_df_list = []
 for col in col_list:
   news_list = list(

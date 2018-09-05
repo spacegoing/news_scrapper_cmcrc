@@ -27,8 +27,8 @@ select distinct value from refdata_refdata where symbol='ZNH.SI' and stream_name
 
 -- ticker
 select * from refdata_refdata
-where stream_name = 'SES'
-and value = 'HKLD' and key = 'ticker_symbol';
+where stream_name = 'LSE'
+and value = 'ABC' and key = 'ticker_symbol' limit 2;
 
 -- dangerous user
 -- 'ENGINE': 'django.db.backends.postgresql_psycopg2',
