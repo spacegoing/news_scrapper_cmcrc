@@ -55,7 +55,7 @@ def ticker2ric_df(df, ticker_ric_dict):
     return ticker_ric_dict.get(ticker, None)
 
   df['RIC'] = df['ticker'].apply(recover_ric)
-  df = df.dropna()
+  df = df.dropna(inplace=True)
 
 
 def sgx_pipeline(df):
