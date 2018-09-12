@@ -40,7 +40,7 @@ def title_filter(x):
 
 def recover_isin(out_total):
   mkt_ric_isin_map = pd.read_csv('mkt_ric_isin_map.csv', index_col=None)
-  mkt_ric_isin_dict = {(i[0], i[1]): i[2] for i in mkt_ric_isin_map.as_matrix()}
+  mkt_ric_isin_dict = {(i[0], i[1]): i[2] for i in mkt_ric_isin_map.values}
 
   def recover(x):
     string = x['RIC']
@@ -49,7 +49,11 @@ def recover_isin(out_total):
       string = candidate
     return string
 
-  out_total['ISIN'] = out_total.apply(recover, axis=1)
+  out_total.loc['ISIN'] = out_total.apply(recover, axis=1)
+
+
+def filter_double_per(x):
+  return x.count('.') < 2
 
 
 def reuters_pipeline(df_total):
@@ -66,17 +70,12 @@ def reuters_pipeline(df_total):
 
   # recover isin
   recover_isin(out_total)
+  out_total = out_total[out_total['RIC'].apply(filter_double_per)]
 
+  out_total.to_csv(
+      'result_%s_%s_%s.csv' % ('_'.join(mkt_list), be_date, en_date),
+      index=False)
 
-
-def filter_double_per(x):
-  return x.count('.') < 2
-
-
-out_total = out_total[out_total['RIC'].apply(filter_double_per)]
-
-out_total.to_csv(
-    'result_%s_%s_%s.csv' % ('_'.join(mkt_list), be_date, en_date), index=False)
 
 if __name__ == "__main__":
   # mkt_list = [
@@ -92,4 +91,4 @@ if __name__ == "__main__":
   be_date = '2018-08-01'
   en_date = '2018-08-31'
   df_total = concat_mg_col(mkt_list, be_date, en_date)
-
+  reuters_pipeline(df_total)

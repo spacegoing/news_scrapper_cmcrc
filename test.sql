@@ -27,7 +27,7 @@ select distinct value from refdata_refdata where symbol='ZNH.SI' and stream_name
 
 -- ticker
 select * from refdata_refdata
-where stream_name = 'LSE'
+where stream_name in ('LSE')
 and value = 'ABC' and key = 'ticker_symbol' limit 2;
 
 -- dangerous user
