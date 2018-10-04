@@ -5,6 +5,7 @@ import pandas as pd
 mkt_dbconfig = {
     'dbname': 'mqdashboard',
     'user': 'dbreader',
+    'port': '5432',
     'password': 'cmcrc2018!',
     'host': 'mqdashboarddb-metrics.czm2hxmcygx4.us-east-1.rds.amazonaws.com'
 }

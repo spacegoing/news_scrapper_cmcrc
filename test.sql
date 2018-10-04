@@ -37,7 +37,9 @@ and value = 'ABC' and key = 'ticker_symbol' limit 2;
 -- 'PASSWORD': 'I99ub6Lw',
 -- 'HOST': 'mqdashboarddb-metrics.czm2hxmcygx4.us-east-1.rds.amazonaws.com',
 
-
+select date, stream_name, symbol from refdata_tradablesymbolmap
+where trading_market='nasdaq' and tradable='nasdaq:HCBK:USD'
+order by abs(date '2014-03-31'-date) limit 1;
 
 -- 'dbname': 'refdata',
 -- 'host': 'reference-data.czm2hxmcygx4.us-east-1.rds.amazonaws.com',
