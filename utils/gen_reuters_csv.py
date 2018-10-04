@@ -49,7 +49,7 @@ def recover_isin(out_total):
       string = candidate
     return string
 
-  out_total.loc['ISIN'] = out_total.apply(recover, axis=1)
+  out_total['ISIN'] = out_total.apply(recover, axis=1)
 
 
 def filter_double_per(x):
@@ -88,7 +88,13 @@ if __name__ == "__main__":
 
   # be_date = '2018-01-31'
   # en_date = '2018-05-04'
-  be_date = '2018-08-01'
-  en_date = '2018-08-31'
+  be_date = '2018-09-01'
+  en_date = '2018-09-30'
   df_total = concat_mg_col(mkt_list, be_date, en_date)
   reuters_pipeline(df_total)
+
+  '''
+  mongodb script:
+  find news in date range
+  db.sao_paulo.find({'date':{$gte:ISODate("2018-09-01"),$lte:ISODate("2018-09-31")}}).count()
+  '''

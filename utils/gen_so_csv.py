@@ -191,15 +191,15 @@ if __name__ == "__main__":
       # "johannesburg": ("JSE_News",),
       # 'sao_paulo': ("SAO_News",),
   }
-  be_date = '2018-08-01'
-  en_date = '2018-08-31'
+  be_date = '2018-09-01'
+  en_date = '2018-09-30'
 
   gen_csv(mqd_opedia_dict, be_date, en_date)
 
-  a= pd.read_csv('result_asx_lse_nasdaq_sgx_2018-08-01_2018-08-31.csv', index_col=None)
-  b= pd.read_csv('result_sao_paulo_johannesburg_2018-08-01_2018-08-31.csv', index_col=None)
+  a= pd.read_csv('result_asx_lse_nasdaq_sgx_%s_%s.csv' % (be_date, en_date), index_col=None)
+  b= pd.read_csv('result_sao_paulo_johannesburg_%s_%s.csv' % (be_date, en_date), index_col=None)
   c=pd.concat([a,b])
   c.to_csv(
-      'result_asx_lse_nasdaq_sgx_sao_paulo_2018-08-01_2018-08-31.csv',
+      'result_asx_lse_nasdaq_sgx_sao_paulo_%s_%s.csv' % (be_date, en_date),
       index=False)
 
