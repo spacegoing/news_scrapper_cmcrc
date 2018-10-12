@@ -1,0 +1,50 @@
+
+* Scripts
+*** scraping news
+cd /home/lchang/mqdCodeLab/news_scrapper_cmcrc/news/
+scrapy crawl news
+
+cd /home/lchang/mqdCodeLab/news_scrapper_cmcrc/reuters/
+scrapy crawl reuters_spider
+
+
+cd /home/lchang/mqdCodeLab/news_scrapper_cmcrc/utils/
+cd /home/lchang/mqdCodeLab/news_scrapper_cmcrc/ex_spiders
+
+import pickle
+with open('tradable_sequence_dict.pickle', 'rb') as f:
+  tradable_sequence_dict = pickle.load(f)
+
+{'nasdaq:ZG:USD': ['NSM', 'ZG.OQ'], 'nasdaq:MASI:USD': ['NSM', 'MASI.OQ']}
+https://www.mqdashboard.com/insight/merged/#search/none/none/1/none/none/none/none/none/none/none/book_value_of_equity,total_trade_value,total_trade_value_localCurrency/0/1/default/5/1/2018-04-03/2018-10-02/none/none/3/I/1/none/none/none/none/line
+
+/home/lchang/mqdCodeLab/prototypes/BUS-3472/
+
+*** guba
+/home/lchang/mqdCodeLab/sentiment_mqd/guba_spiders/
+scrapy crawl guba
+
+*** misc
+Event Collections
+/home/lchang/mqdCodeLab/Event_Collection_CMCRC/Market_Event_Spiders/market_events_spiders
+
+Tradable Symbol Map
+/home/lchang/mqdCodeLab/prototypes/BUS-3472/tradable_sequence_dict.pickle
+
+** News Upload
+*** Workflow urls
+
+  pretend jobs
+  http://workflow.aws.cmcrc.com/calendar#/asx%5Easx,asx_info,lse_info,lse%5Else,nasdaq_info,nasdaq%5Enasdaq,sao_paulo_info,sao_paulo%5Esao_paulo,sgx_info,sgx%5Esgx/60//false/false/false/calendar/2018-09-01/2018-09-30//nasdaq_info/convert_info//
+
+  create convert jobs
+  http://workflow.aws.cmcrc.com/createjobs/#/60/asx_info,lse_info,nasdaq_info,sao_paulo_info,sgx_info/2018-09-01/2018-09-30/XP/true/true
+
+  generate & sync
+  http://workflow.aws.cmcrc.com/calendar#/asx%5Easx,asx_info,lse_info,lse%5Else,nasdaq_info,nasdaq%5Enasdaq,sao_paulo_info,sao_paulo%5Esao_paulo,sgx_info,sgx%5Esgx/60//false/false/false/calendar/2018-09-01/2018-09-30//nasdaq_info/convert_info//
+
+  create generate & sync jobs
+  http://workflow.aws.cmcrc.com/createjobs/#/185,187,188/asx%5Easx,lse%5Else,nasdaq%5Enasdaq,sao_paulo%5Esao_paulo,sgx%5Esgx/2018-09-01/2018-09-30/XP/true/true
+
+  parent jobs daily summary generate
+  http://workflow.aws.cmcrc.com/createjobs/#/183/asx%5Easx,lse%5Else,nasdaq%5Enasdaq,sao_paulo%5Esao_paulo,sgx%5Esgx/2018-09-01/2018-09-30/XW/true/true
