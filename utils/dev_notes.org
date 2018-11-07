@@ -1,9 +1,48 @@
+# -*- coding: utf-8 -*-
+2018-11-07 11:12:42 [stock_url] INFO: https://www.stockopedia.com/share-prices/?page=19&region=in
+curl http://localhost:6800/cancel.json -d project=guba_spiders -d job=
 
+curl http://localhost:6800/schedule.json -d project=guba_spiders -d spider=guba -d fname=SZ_part1.pickle
+curl http://localhost:6800/schedule.json -d project=guba_spiders -d spider=guba -d fname=SZ_part2.pickle
+curl http://localhost:6800/schedule.json -d project=guba_spiders -d spider=guba -d fname=SH_part1.pickle
+curl http://localhost:6800/schedule.json -d project=guba_spiders -d spider=guba -d fname=SH_part2.pickle
+
+curl http://localhost:6800/listjobs.json?project=guba_spiders
+
+2018-11-05 21:36:02 [guba] INFO: parse comment: http://guba.eastmoney.com/news,300685,754983519,d_510.html
+2018-11-01 12:49:31 [guba] INFO: http://guba.eastmoney.com/news,cjpl,789087473,d.html
+
+2018-11-01 16:22:47 [scrapy.core.scraper] ERROR: Spider error processing <GET http://guba.eastmoney.com/news,600000,789529070,d_2.html#storeply> (referer: http://guba.eastmoney.com/news,600000,789529070,d.html)
+
+2018-11-01 15:28:28 [guba] INFO: http://guba.eastmoney.com/news,600000,739093106,d_2.html
+http://guba.eastmoney.com/list,600399_48.html
+
+InvalidDocument: documents must have only string keys, key was datetime.datetime(2017, 12, 28, 0, 0)
+select date, stream_name, symbol from refdata_tradablesymbolmap
+where trading_market='nasdaq' and date<='2015-10-19' and date>='2015-09-01' order by abs(date
+'2016-03-31'-date) limit 1;
+
+
+nasdaq_tradable_symbol_map_2015-09-01_2015-10-19_2015-10-21_2016-03-31.csv
+select date, stream_name, symbol from refdata_tradablesymbolmap
+where trading_market='nasdaq' and tradable='nasdaq:PLTMnv:USD' order by abs(date
+'2016-03-31'-date) limit 10;
+
+
+{'2018-02-02': {'23:58:37': 1.0}, '2018-02-03': {'23:58:52': 1.0}}
 * Scripts
 *** scraping news
+tnew so_urls
+cd /home/lchang/mqdCodeLab/news_scrapper_cmcrc/stockpedia/
+scrapy crawl stock_url
+
+tnew so_news
 cd /home/lchang/mqdCodeLab/news_scrapper_cmcrc/news/
 scrapy crawl news
+- old_latest_date = dp.parse('2018 05 30') change this date to
+  last running date (can be found in log file)
 
+tnew rt_news
 cd /home/lchang/mqdCodeLab/news_scrapper_cmcrc/reuters/
 scrapy crawl reuters_spider
 
@@ -21,8 +60,11 @@ https://www.mqdashboard.com/insight/merged/#search/none/none/1/none/none/none/no
 /home/lchang/mqdCodeLab/prototypes/BUS-3472/
 
 *** guba
-/home/lchang/mqdCodeLab/sentiment_mqd/guba_spiders/
+db.getCollection('002607').find({}, {'post_datetime':1}).sort({"post_datetime": 1}).limit(1)
+cd /home/lchang/mqdCodeLab/sentiment_mqd/guba_spiders/
 scrapy crawl guba
+
+docker run -itd --name gubamongo -v /home/lchang/mqdCodeLab/guba_data/:/data/db -p 27017:27017 mongo
 
 *** misc
 Event Collections
@@ -48,3 +90,6 @@ Tradable Symbol Map
 
   parent jobs daily summary generate
   http://workflow.aws.cmcrc.com/createjobs/#/183/asx%5Easx,lse%5Else,nasdaq%5Enasdaq,sao_paulo%5Esao_paulo,sgx%5Esgx/2018-09-01/2018-09-30/XW/true/true
+** Docker
+*** Run
+docker run -itd --net=host --env-file=env-file-mqd-etl --entrypoint=/bin/bash --name=etl -v /home/lchang/mqdCodeLab/MQD/docker_volume:/projects docker-registry.aws.cmcrc.com/cmcrc/mqd-etl:latest

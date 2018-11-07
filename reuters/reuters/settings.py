@@ -15,6 +15,7 @@ SPIDER_MODULES = ['reuters.spiders']
 NEWSPIDER_MODULE = 'reuters.spiders'
 
 LOG_LEVEL = 'INFO'
+LOG_FILE = 'reuters.log'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'reuters (+http://www.yourdomain.com)'
