@@ -138,3 +138,41 @@ tmux ls # list session name
 tat [session name]
 C-Shift-\- d dettach
 ```
+
+## Upload ##
+
+### Generate CSV Files ###
+
+```bash
+cd /home/lchang/mqdCodeLab/news_scrapper_cmcrc/utils/
+gen_reuters_csv.py
+gen_so_csv.py
+
+# gen_reuters_csv.py
+  be_date = '2018-10-01'
+  en_date = '2018-10-31'
+python gen_reuters_csv.py 
+# output: result_sao_paulo_johannesburg_2018-10-01_2018-10-31.csv
+
+# gen_so_csv.py
+  be_date = '2018-10-01'
+  en_date = '2018-10-31'
+python gen_so_csv.py
+# output: result_sao_paulo_johannesburg_2018-10-01_2018-10-31.csv
+```
+
+### Test on AWS ###
+
+```bash
+scp result_asx_lse_nasdaq_sgx_sao_paulo_2018-10-01_2018-10-31.csv mqdAWS:~/Downloads
+
+cd /home/ubuntu/mqdCodeLab/prototypes/ETL-3836/
+source up/bin/activate
+python convert_and_upload.py --input_file=news/result_asx_lse_nasdaq_sgx_sao_paulo_2018-10-01_2018-10-31.csv --date_from=2018-10-01 --date_to=2018-10-31
+```
+
+### Push CSV ###
+
+``` bash
+cp result_asx_lse_nasdaq_sgx_sao_paulo_2018-10-01_2018-10-31.csv /home/lchang/mqdCodeLab/prototypes/ETL-3836/news/ 
+```
