@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import pickle
 import pandas as pd
 import dateparser as dp
 from pymongo import MongoClient
@@ -71,6 +72,16 @@ def reuters_pipeline(df_total):
   # recover isin
   recover_isin(out_total)
   out_total = out_total[out_total['RIC'].apply(filter_double_per)]
+
+  mapdir = '/home/lchang/mqdCodeLab/news_scrapper_cmcrc/reuters/sao_map_dict.pickle'
+  with open(mapdir, 'rb') as f:
+    sao_map_dict = pickle.load(f)
+  def map_sao_ric(x):
+    if x.endswith('.SA'): # only sao_paulo
+      return sao_map_dict[x]
+    else:
+      return x
+  out_total['RIC'] = out_total['RIC'].apply(map_sao_ric)
 
   out_total.to_csv(
       'result_%s_%s_%s.csv' % ('_'.join(mkt_list), be_date, en_date),
