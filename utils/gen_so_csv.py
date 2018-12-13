@@ -199,6 +199,9 @@ if __name__ == "__main__":
   a= pd.read_csv('result_asx_lse_nasdaq_sgx_%s_%s.csv' % (be_date, en_date), index_col=None)
   b= pd.read_csv('result_sao_paulo_johannesburg_%s_%s.csv' % (be_date, en_date), index_col=None)
   c=pd.concat([a,b])
+
+  from gen_ulti_csv import filter_not_in_dailystats
+  c = filter_not_in_dailystats(c, be_date, en_date)
   c.to_csv(
       'result_asx_lse_nasdaq_sgx_sao_paulo_%s_%s.csv' % (be_date, en_date),
       index=False)
