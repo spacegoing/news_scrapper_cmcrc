@@ -73,6 +73,7 @@ def reuters_pipeline(df_total):
   recover_isin(out_total)
   out_total = out_total[out_total['RIC'].apply(filter_double_per)]
 
+  # Fix sao_paulo ric errors in scrape urls
   mapdir = '/home/lchang/mqdCodeLab/news_scrapper_cmcrc/reuters/sao_map_dict.pickle'
   with open(mapdir, 'rb') as f:
     sao_map_dict = pickle.load(f)

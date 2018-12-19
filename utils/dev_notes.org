@@ -90,6 +90,27 @@ Tradable Symbol Map
 
   parent jobs daily summary generate
   http://workflow.aws.cmcrc.com/createjobs/#/183/asx%5Easx,lse%5Else,nasdaq%5Enasdaq,sao_paulo%5Esao_paulo,sgx%5Esgx/2018-09-01/2018-09-30/XW/true/true
+** News Checking
+For all markets:
+
+- filter_ric: '..' removed
+- If not in that month's api_dailystats, drop nas
+- print goupby market in / not in dailystats counts
+
+Notes:
+- reuters/sao_map_dict.pickle should be regenerated for new reuters/final_mqd_nodata.csv
+ 
+Market Specific:
+
+*** SGX
+- filter_ric
+*** LSE
+- recover_isin
+- recover_ric_suf
+*** SAO
+- remove '1' 'F' (sao_map_dict)
+
+
 ** Docker
 *** Run
 docker run -itd --net=host --env-file=env-file-mqd-etl --entrypoint=/bin/bash --name=etl -v /home/lchang/mqdCodeLab/MQD/docker_volume:/projects docker-registry.aws.cmcrc.com/cmcrc/mqd-etl:latest
