@@ -37,12 +37,22 @@ and value = 'ABC' and key = 'ticker_symbol' limit 2;
 -- 'PASSWORD': 'I99ub6Lw',
 -- 'HOST': 'mqdashboarddb-metrics.czm2hxmcygx4.us-east-1.rds.amazonaws.com',
 
+select * from refdata_tradablesymbolmap
+where stream_name='NSM' and trading_market='nasdaq' and tradable='nasdaq:ZG:USD'
+limit 1;
+
 select date, stream_name, symbol from refdata_tradablesymbolmap
-where trading_market='nasdaq' and tradable='nasdaq:HCBK:USD'
-order by abs(date '2014-03-31'-date) limit 1;
+where trading_market='nasdaq' and date<='2015-10-19' and date>='2015-09-01' order by abs(date
+'2016-03-31'-date) limit 10;
+
+select date, stream_name, symbol from refdata_tradablesymbolmap
+where trading_market='nasdaq' and tradable='nasdaq:PLTMnv:USD' limit 10;
 
 -- 'dbname': 'refdata',
 -- 'host': 'reference-data.czm2hxmcygx4.us-east-1.rds.amazonaws.com',
 -- 'port': '5432',
 -- 'user': 'reader',
 -- 'password': 'refdatareader2017!'
+
+-- find currency when convert_upload missing
+select * from refdata_refdata where symbol='AMOS.SI' and stream_name='SES' and key='currency' and date>='2018-11-01' limit 2;
