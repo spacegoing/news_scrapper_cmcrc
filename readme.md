@@ -176,3 +176,7 @@ python convert_and_upload.py --input_file=news/result_asx_lse_nasdaq_sgx_sao_pau
 ``` bash
 cp result_asx_lse_nasdaq_sgx_sao_paulo_2018-10-01_2018-10-31.csv /home/lchang/mqdCodeLab/prototypes/ETL-3836/news/ 
 ```
+
+### Check S3 ###
+
+- https://console.aws.amazon.com/s3/buckets/cmcrc-workflow/convert_info/asx_info/2018/?region=us-east-2&tab=overview

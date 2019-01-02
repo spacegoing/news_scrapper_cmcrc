@@ -202,7 +202,8 @@ if __name__ == "__main__":
 
   from gen_ulti_csv import filter_not_in_dailystats
   c = filter_not_in_dailystats(c, be_date, en_date)
+  print('Per Market Total Num')
+  print(c.groupby('Market')['RIC'].count())
   c.to_csv(
       'result_asx_lse_nasdaq_sgx_sao_paulo_%s_%s.csv' % (be_date, en_date),
       index=False)
-
