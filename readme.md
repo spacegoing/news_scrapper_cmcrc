@@ -168,7 +168,7 @@ scp result_asx_lse_nasdaq_sgx_sao_paulo_2018-10-01_2018-10-31.csv mqdAWS:~/Downl
 
 cd /home/ubuntu/mqdCodeLab/prototypes/ETL-3836/
 source up/bin/activate
-python convert_and_upload.py --input_file=news/result_asx_lse_nasdaq_sgx_sao_paulo_2018-10-01_2018-10-31.csv --date_from=2018-10-01 --date_to=2018-10-31
+python convert_and_upload.py --input_file=news/result_asx_lse_nasdaq_sgx_sao_paulo_2018-09-01_2018-09-30.csv --date_from=2018-09-01 --date_to=2018-09-30
 ```
 
 ### Push CSV ###

@@ -74,6 +74,9 @@ Tradable Symbol Map
 /home/lchang/mqdCodeLab/prototypes/BUS-3472/tradable_sequence_dict.pickle
 
 ** News Upload
+*** gen scraped news csv
+python gen_reuters_csv.py
+python gen_so_csv.py
 *** Workflow urls
 
   pretend jobs
@@ -112,5 +115,28 @@ Market Specific:
 
 
 ** Docker
-*** Run
+*** Container
+#+BEGIN_SRC bash
 docker run -itd --net=host --env-file=env-file-mqd-etl --entrypoint=/bin/bash --name=etl -v /home/lchang/mqdCodeLab/MQD/docker_volume:/projects docker-registry.aws.cmcrc.com/cmcrc/mqd-etl:latest
+
+dbash etl
+./entrypoint.sh
+pip install ipdb
+apt-get install silversearcher-ag
+mv /usr/local/lib/python3.7/site-packages/cmcrc/metrics /projects/
+ln -sf /projects/metrics /usr/local/lib/python3.7/site-packages/cmcrc/
+chmod -R 777 /projects/metrics
+cd /projects
+
+#+END_SRC
+
+*** Run
+
+#+BEGIN_SRC bash
+metrics_generate_aws --metric=cmcrc.metrics.nbbo_quote_volatility --track_types=status --uptick_market=nyse^ --date_from=2018-04-11 --date_to=2018-04-11 --reader=uptick_blueshift.reader.BlueshiftS3FeedReader --config_file=/home/config --refdata_reader=cmcrc.refdata.DjangoRefDataReader --refdata-settings-module-name=cmcrc_refdata.refdata_settings_aws
+#+END_SRC
+
+*** scp
+#+BEGIN_SRC bash
+scp mqd:/home/lchang/mqdCodeLab/MQD/docker_volume/metrics/nbbo_quote_volatility.py ~/Downloads
+#+END_SRC
