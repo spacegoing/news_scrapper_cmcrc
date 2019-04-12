@@ -85,10 +85,12 @@ python gen_so_csv.py
   create convert jobs
   http://workflow.aws.cmcrc.com/createjobs/#/60/asx_info,lse_info,nasdaq_info,sao_paulo_info,sgx_info/2018-09-01/2018-09-30/XP/true/true
 
-  generate & sync
-  http://workflow.aws.cmcrc.com/calendar#/asx%5Easx,asx_info,lse_info,lse%5Else,nasdaq_info,nasdaq%5Enasdaq,sao_paulo_info,sao_paulo%5Esao_paulo,sgx_info,sgx%5Esgx/60//false/false/false/calendar/2018-09-01/2018-09-30//nasdaq_info/convert_info//
+  Comment if all convert jobs finished
 
-  create generate & sync jobs
+  generate & sync
+  create & run: http://workflow.aws.cmcrc.com/calendar#/asx%5Easx,asx_info,lse_info,lse%5Else,nasdaq_info,nasdaq%5Enasdaq,sao_paulo_info,sao_paulo%5Esao_paulo,sgx_info,sgx%5Esgx/185//false/false/false/calendar/2019-01-01/2019-03-31//nasdaq_info/daily_info///
+
+  If above finished, check info_leakage
   http://workflow.aws.cmcrc.com/createjobs/#/185,187,188/asx%5Easx,lse%5Else,nasdaq%5Enasdaq,sao_paulo%5Esao_paulo,sgx%5Esgx/2018-09-01/2018-09-30/XP/true/true
 
   parent jobs daily summary generate
