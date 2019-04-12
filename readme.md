@@ -20,6 +20,12 @@
 1. execute `mongod &` first
 2. (optional) run `mongo` to start a mongo shell
 
+#### Using mongo docker ####
+
+1. docker run --name jsemongo_test -v /home/lchang/mqdCodeLab/jse_news_data/data:/data -p 27017:27017 -itd mongo
+2. If needed, execute bash in container. execute `mongo` in
+   container to enter mongo console
+
 ### Run Spider ###
 
 1. `cd [spider directory]`
