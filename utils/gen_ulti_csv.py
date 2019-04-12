@@ -9,10 +9,10 @@ def filter_not_in_dailystats(df, be_date, en_date):
 
   mkt_dbconfig = {
       'dbname': 'mqdashboard',
-      'user': 'dbreader',
+      'user': 'mqdashboard',
       'port': '5432',
-      'password': 'cmcrc2018!',
-      'host': 'mqdashboarddb-metrics.czm2hxmcygx4.us-east-1.rds.amazonaws.com'
+      'password': 'I99ub6Lw',
+      'host': 'mqd-staging-metrics.czm2hxmcygx4.us-east-1.rds.amazonaws.com'
   }
   mkt_conn = pg.connect(**mkt_dbconfig)
   mkt_cur = mkt_conn.cursor()
