@@ -106,7 +106,7 @@ class LoginSpider(scrapy.Spider):
           'a/@href').extract()[0].strip()
 
       # todo: update from database
-      old_latest_date = dp.parse('2018 05 30')
+      old_latest_date = dp.parse('2019 06 30', date_formats=['%Y %m %d'])
       if response.meta['date'] > old_latest_date:
         yield scrapy.Request(
             response.meta['news_url'],

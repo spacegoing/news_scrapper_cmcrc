@@ -183,6 +183,8 @@ def gen_csv(mqd_opedia_dict, be_date, en_date):
 
 if __name__ == "__main__":
 
+  from config import be_date, en_date
+
   mqd_opedia_dict = {
       "asx": ("ASX_News",),
       'lse': ("LSE_News",),
@@ -191,8 +193,6 @@ if __name__ == "__main__":
       # "johannesburg": ("JSE_News",),
       # 'sao_paulo': ("SAO_News",),
   }
-  be_date = '2018-09-01'
-  en_date = '2018-09-30'
 
   gen_csv(mqd_opedia_dict, be_date, en_date)
 

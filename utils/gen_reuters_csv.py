@@ -74,7 +74,7 @@ def reuters_pipeline(df_total):
   out_total = out_total[out_total['RIC'].apply(filter_double_per)]
 
   # Fix sao_paulo ric errors in scrape urls
-  mapdir = '/home/lchang/mqdCodeLab/news_scrapper_cmcrc/reuters/sao_map_dict.pickle'
+  mapdir = '../reuters/sao_map_dict.pickle'
   with open(mapdir, 'rb') as f:
     sao_map_dict = pickle.load(f)
   def map_sao_ric(x):
@@ -98,10 +98,7 @@ if __name__ == "__main__":
   # ]
   mkt_list = ['sao_paulo', 'johannesburg']
 
-  # be_date = '2018-01-31'
-  # en_date = '2018-05-04'
-  be_date = '2018-09-01'
-  en_date = '2018-09-30'
+  from config import be_date, en_date
   df_total = concat_mg_col(mkt_list, be_date, en_date)
   reuters_pipeline(df_total)
 
