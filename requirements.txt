@@ -2,3 +2,4 @@ pymongo
 dateparser
 scrapy
 demjson
+psycopg2
