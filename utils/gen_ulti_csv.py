@@ -16,11 +16,23 @@ def filter_not_in_dailystats(df, be_date, en_date):
   }
   mkt_conn = pg.connect(**mkt_dbconfig)
   mkt_cur = mkt_conn.cursor()
-  mkt_info_query = "select * from api_dailystats where market_id in (1,3,7,208) and date between %s and %s"
+  '''
+  trading_market_id found by api_market
+  select * from api_market where uptick_name like '%nasdaq%'
+
+  nasdaq_consolidated 338
+  lse_dsl 450
+  asx_dsl 333
+  sgx_dsl 334
+  '''
+  mkt_info_query = "select * from api_dsltradestats where trading_market_id in (338,450,333,334) and date between %s and %s"
   mkt_cur.execute(mkt_info_query, [be_date, en_date])
   mkt_info_list = mkt_cur.fetchall()
   mkt_df = pd.DataFrame(mkt_info_list)
-  mkt_ric_set = set(mkt_df[3])
+  try:
+    mkt_ric_set = set(mkt_df[2]) # 'security' field
+  except:
+    import ipdb; ipdb.set_trace(context=7)
 
   notin_ser = ric_ser.apply(lambda x: x[:x.find('.')] not in mkt_ric_set)
   notin_mkt_count_df = df.loc[ric_ser[notin_ser].index].groupby(
