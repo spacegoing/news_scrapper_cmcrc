@@ -169,6 +169,20 @@ python gen_so_csv.py
 
 ### Test on AWS ###
 
+
+#### Create Virtual Env ####
+
+```bash
+cd /home/hhu/JustCodeLab/MQD/docker_volume/prototypes/ETL-3836/
+# warning: do not use anaconda, use system's vanilla python
+python3 -m venv up
+source up/bin/activate
+# pip3 install -r requirements.txt --extra-index-url http://pypi.aws.cmcrc.com/pypi --trusted-host pypi.aws.cmcrc.com
+python convert_and_upload.py --input_file=news/result_asx_lse_nasdaq_sgx_sao_paulo_2019-09-01_2019-09-30.csv --date_from=2019-09-01 --date_to=2019-09-30
+```
+
+#### Trying upload ####
+
 ```bash
 scp result_asx_lse_nasdaq_sgx_sao_paulo_2018-10-01_2018-10-31.csv mqdAWS:~/Downloads
 
@@ -176,6 +190,19 @@ cd /home/ubuntu/mqdCodeLab/prototypes/ETL-3836/
 source up/bin/activate
 python convert_and_upload.py --input_file=news/result_asx_lse_nasdaq_sgx_sao_paulo_2018-09-01_2018-09-30.csv --date_from=2018-09-01 --date_to=2018-09-30
 ```
+
+#### cmcrc repo compatible issue ####
+
+```python3
+# up/lib/python3.6/site-packages/cmcrc/refdata/refdata.py
+# comment following code in def get_value_by_symbol():
+        # if self._use_merged_sources and self._tradecho_mapper is not None:
+        #     # This alternate symbol is only needed for TRTH RefdData
+        #     alternative_symbol = self._tradecho_mapper.lse_ric_for_tradecho_ric(
+        #         tradecho_ric=symbol, date=date
+        #     )
+```
+
 
 ### Push CSV ###
 
